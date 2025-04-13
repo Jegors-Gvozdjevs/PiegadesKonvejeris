@@ -97,10 +97,6 @@ def deployApp(envName, port) {
     dir('python-greetings') {
         // Droši mēģināt izdzēst procesu — ja tas neeksistē, ignorēt kļūdu
         bat "pm2 delete greetings-app-${envName} & EXIT /B 0"
-
-        // Pauze, lai nodrošinātu, ka ports/faili atbrīvoti
-        bat "timeout /T 2 /NOBREAK"
-
         // Startēt aplikāciju uz noteiktā porta
         bat "pm2 start app.py --name greetings-app-${envName} -- --port ${port}"
     }
