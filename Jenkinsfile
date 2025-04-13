@@ -106,10 +106,26 @@ def deployApp(envName, port) {
 
 def testApp(envName) {
     echo "Running tests on ${envName} environment..."
+
+    // Izdzēst veco mapi, ja tā eksistē
     bat 'IF EXIST course-js-api-framework rmdir /s /q course-js-api-framework'
-    bat "git clone %TEST_REPO%"
+
+    // Klonēt testu repozitoriju
+    bat 'git clone %TEST_REPO%'
+
     dir('course-js-api-framework') {
-        bat "npm install"
-        bat "npm run greetings greetings_${envName}"
+        bat 'npm install'
+
+        // Definēt atbilstošu HOST mainīgo atkarībā no vides
+        def port = ""
+        if (envName == 'dev')      { port = '7001' }
+        else if (envName == 'staging') { port = '7002' }
+        else if (envName == 'preprod') { port = '7003' }
+        else if (envName == 'prod')    { port = '7004' }
+
+        bat """
+        set HOST=http://localhost:${port}
+        npm run greetings
+        """
     }
 }
