@@ -85,21 +85,23 @@ pipeline {
     }
 }
 
+
 def deployApp(envName, port) {
-    echo "Deploying to ${envName} environment..."
-
-    // Dzēst iepriekšējo direktoriju, ja tā eksistē
-    bat "if exist python-greetings rmdir /s /q python-greetings"
-
-    // Klonēt repozitoriju
-    bat "git clone %GITHUB_REPO%"
-
-    dir('python-greetings') {
-        // Droši mēģināt izdzēst procesu — ja tas neeksistē, ignorēt kļūdu
-        bat "pm2 delete greetings-app-${envName} & EXIT /B 0"
-        // Startēt aplikāciju uz noteiktā porta
-        bat "pm2 start app.py --name greetings-app-${envName} -- --port ${port}"
-    }
+    bat """
+    echo "Cloning python-greetings ..."
+    if exist python-greetings rmdir /s /q python-greetings
+    git clone %GITHUB_REPO%
+    cd python-greetings
+    echo "Stopping existing service if exists..."
+    pm2 list | findstr "greetings-app-${envName}" >nul
+    if %errorlevel% equ 0 (
+        pm2 delete greetings-app-${envName}
+    ) else (
+        echo "Process greetings-app-${envName} not found, skipping delete."
+    )
+    echo "Starting service on port ${port}..."
+    pm2 start app.py --name greetings-app-${envName} -- --port ${port}
+    """
 }
 
 def testApp(envName) {
