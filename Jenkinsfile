@@ -13,10 +13,10 @@ pipeline {
             steps {
                 script {
                     echo "Installing all required dependencies..."
-                    sh "git clone ${GITHUB_REPO}"
+                    bat "git clone ${GITHUB_REPO}"
                     dir('python-greetings') {
-                        sh "ls -la"
-                        sh "pip3 install -r requirements.txt"
+                        bat "ls -la"
+                        bat "pip3 install -r requirements.txt"
                     }
                 }
             }
@@ -74,18 +74,18 @@ pipeline {
 
 def deployApp(envName, port) {
     echo "Deploying to ${envName} environment..."
-    sh "git clone ${GITHUB_REPO}"
+    bat "git clone ${GITHUB_REPO}"
     dir('python-greetings') {
-        sh "pm2 delete greetings-app-${envName} || true"
-        sh "pm2 start app.py --name greetings-app-${envName} -- --port ${port}"
+        bat "pm2 delete greetings-app-${envName} || true"
+        bat "pm2 start app.py --name greetings-app-${envName} -- --port ${port}"
     }
 }
 
 def testApp(envName) {
     echo "Running tests on ${envName} environment..."
-    sh "git clone ${TEST_REPO}"
+    bat "git clone ${TEST_REPO}"
     dir('course-js-api-framework') {
-        sh "npm install"
-        sh "npm run greetings greetings_${envName}"
+        bat "npm install"
+        bat "npm run greetings greetings_${envName}"
     }
 }
