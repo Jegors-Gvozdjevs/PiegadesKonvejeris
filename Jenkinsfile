@@ -92,9 +92,9 @@ def deployApp(envName, port) {
     dir('python-greetings') {
     bat """
     if %errorlevel% equ 0 (
-        pm2 delete greetings-app-${env}
+        pm2 delete greetings-app-${envName}
     ) else (
-        echo "Process greetings-app-${env} not found, skipping delete."
+        echo "Process greetings-app-${envName} not found, skipping delete."
     )
     """
         bat "pm2 start app.py --name greetings-app-${envName} -- --port ${port}"
