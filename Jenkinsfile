@@ -14,6 +14,7 @@ pipeline {
             steps {
                 script {
                     echo "Installing all required dependencies..."
+                    bat "rmdir /s /q python-greetings"
                     bat "git clone %GITHUB_REPO%"
                     dir('python-greetings') {
                         bat "dir"
