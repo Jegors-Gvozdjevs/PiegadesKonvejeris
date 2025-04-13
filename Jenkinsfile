@@ -14,7 +14,7 @@ pipeline {
             steps {
                 script {
                     echo "Installing all required dependencies..."
-                    bat "rmdir /s /q python-greetings"
+                    bat "if exist python-greetings rmdir /s /q python-greetings"
                     bat "git clone %GITHUB_REPO%"
                     dir('python-greetings') {
                         bat "dir"
@@ -76,6 +76,7 @@ pipeline {
 
 def deployApp(envName, port) {
     echo "Deploying to ${envName} environment..."
+    bat "if exist python-greetings rmdir /s /q python-greetings"
     bat "git clone %GITHUB_REPO%"
     dir('python-greetings') {
         bat "pm2 delete greetings-app-${envName} & EXIT /B 0"
@@ -85,6 +86,7 @@ def deployApp(envName, port) {
 
 def testApp(envName) {
     echo "Running tests on ${envName} environment..."
+    bat 'IF EXIST course-js-api-framework rmdir /s /q course-js-api-framework'
     bat "git clone %TEST_REPO%"
     dir('course-js-api-framework') {
         bat "npm install"
