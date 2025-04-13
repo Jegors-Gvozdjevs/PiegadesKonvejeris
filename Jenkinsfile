@@ -3,6 +3,10 @@ pipeline {
 
     tools {
         nodejs 'NodeJS'
+    }
+    environment {
+        GITHUB_REPO = "https://github.com/mtararujs/python-greetings"
+        TEST_REPO = "https://github.com/mtararujs/course-js-api-framework"
     }        
      stages {
         stage('install-pip-deps') {
