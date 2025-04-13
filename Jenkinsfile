@@ -7,15 +7,16 @@ pipeline {
     environment {
         GITHUB_REPO = "https://github.com/mtararujs/python-greetings"
         TEST_REPO = "https://github.com/mtararujs/course-js-api-framework"
-    }        
-     stages {
+    }
+
+    stages {
         stage('install-pip-deps') {
             steps {
                 script {
                     echo "Installing all required dependencies..."
-                    bat "git clone ${GITHUB_REPO}"
+                    bat "git clone %GITHUB_REPO%"
                     dir('python-greetings') {
-                        bat "ls -la"
+                        bat "dir"
                         bat "pip3 install -r requirements.txt"
                     }
                 }
@@ -24,7 +25,7 @@ pipeline {
 
         stage('deploy-to-dev') {
             steps {
-                deployApp('dev', 7001)
+                deployApp('dev', '7001')
             }
         }
 
@@ -36,7 +37,7 @@ pipeline {
 
         stage('deploy-to-staging') {
             steps {
-                deployApp('staging', 7002)
+                deployApp('staging', '7002')
             }
         }
 
@@ -48,7 +49,7 @@ pipeline {
 
         stage('deploy-to-preprod') {
             steps {
-                deployApp('preprod', 7003)
+                deployApp('preprod', '7003')
             }
         }
 
@@ -60,7 +61,7 @@ pipeline {
 
         stage('deploy-to-prod') {
             steps {
-                deployApp('prod', 7004)
+                deployApp('prod', '7004')
             }
         }
 
@@ -74,16 +75,16 @@ pipeline {
 
 def deployApp(envName, port) {
     echo "Deploying to ${envName} environment..."
-    bat "git clone ${GITHUB_REPO}"
+    bat "git clone %GITHUB_REPO%"
     dir('python-greetings') {
-        bat "pm2 delete greetings-app-${envName} || true"
+        bat "pm2 delete greetings-app-${envName} & EXIT /B 0"
         bat "pm2 start app.py --name greetings-app-${envName} -- --port ${port}"
     }
 }
 
 def testApp(envName) {
     echo "Running tests on ${envName} environment..."
-    bat "git clone ${TEST_REPO}"
+    bat "git clone %TEST_REPO%"
     dir('course-js-api-framework') {
         bat "npm install"
         bat "npm run greetings greetings_${envName}"
