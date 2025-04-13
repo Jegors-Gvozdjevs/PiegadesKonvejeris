@@ -17,6 +17,7 @@ pipeline {
                 steps {
                     script {
                         echo 'Checking npm version...'
+                        bat 'where python'
                         bat 'python --version'
                     }
                 }
