@@ -28,6 +28,7 @@ pipeline {
                 script {
                     echo 'Installing pm2...'
                     bat 'npm install -g pm2'
+                    bat 'where npm'
                 }
             }
         }
