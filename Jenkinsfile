@@ -90,7 +90,13 @@ def deployApp(envName, port) {
     bat "if exist python-greetings rmdir /s /q python-greetings"
     bat "git clone %GITHUB_REPO%"
     dir('python-greetings') {
-        bat "pm2 delete greetings-app-${envName} & EXIT /B 0"
+    bat """
+    if %errorlevel% equ 0 (
+        pm2 delete greetings-app-${env}
+    ) else (
+        echo "Process greetings-app-${env} not found, skipping delete."
+    )
+    """
         bat "pm2 start app.py --name greetings-app-${envName} -- --port ${port}"
     }
 }
