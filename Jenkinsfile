@@ -91,6 +91,7 @@ def deployApp(envName, port) {
     bat "git clone %GITHUB_REPO%"
     dir('python-greetings') {
     bat """
+    pm2 list | findstr "greetings-app-${envName}" >nul
     if %errorlevel% equ 0 (
         pm2 delete greetings-app-${envName}
     ) else (
